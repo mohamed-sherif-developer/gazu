@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gazu — collection</title>
+
+  <!-- Tailwind CSS v4 Browser Build -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style>
+    .wishlist-btn {
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+
+    .wishlist-btn.active {
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: #f7f7f7;
+      box-shadow: 0 8px 18px rgba(26, 26, 26, 0.12);
+    }
+
+    .search-match {
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+  </style>
+  <script src="auth.js"></script>
+</head>
+
+<body class="bg-[#ecebe9] text-[#1a1a1a] font-sans antialiased selection:bg-[#1a1a1a] selection:text-[#fafafa]">
+
+  <!-- الغلاف الرئيسي لمنع أي سكرول عرضي -->
+  <div class="w-full overflow-x-hidden min-h-screen flex flex-col justify-between">
+
+    <!-- ========================================================== -->
+    <!-- 1. Header / Navbar -->
+    <!-- ========================================================== -->
+    <header class="w-full px-8 md:px-12 py-8 z-30">
+      <nav class="main-nav flex justify-between items-center w-full tracking-[1px] font-normal uppercase">
+
+        <!-- روابط الأقسام السريعة -->
+        <div class="flex gap-6 text-xs md:text-sm">
+          <a href="shop.html?category=men" id="nav-men"
+            class="hover:underline underline-offset-2 transition-opacity duration-200">men</a>
+          <a href="shop.html?category=women" id="nav-women"
+            class="hover:underline underline-offset-2 transition-opacity duration-200">woman</a>
+          <a href="shop.html?category=kids" id="nav-kids"
+            class="hover:underline underline-offset-2 transition-opacity duration-200">kids</a>
+        </div>
+
+        <!-- اللوجو الرئيسي -->
+        <h1 class="text-3xl font-medium tracking-[0.2em] relative">
+          <a href="index.html" class="hover:opacity-80 transition-opacity">gazu</a>
+        </h1>
+
+        <!-- أدوات الـ Nav -->
+        <div class="flex gap-6 text-xs md:text-sm items-center">
+          <a href="login.html" id="login-link" class="hover:underline underline-offset-2 hidden md:inline normal-case">login</a>
+          <a href="#" id="search-toggle" class="search-toggle hover:underline underline-offset-2">search</a>
+          <input id="global-search-input" type="text" placeholder="search" aria-label="Search products"
+            class="search-panel hidden w-28 md:w-36 rounded-[2px] border border-[#1a1a1a]/15 bg-white/70 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-[#1a1a1a] placeholder:text-[#1a1a1a]/45 focus:outline-none focus:border-[#1a1a1a]/35">
+          <a href="wishlist.html" id="wishlist-link"
+            class="wishlist-link hover:underline underline-offset-2">wishlist(<span id="wishlist-count">0</span>)</a>
+          <a href="cart.html" id="cart-link" class="cart-btn hover:underline underline-offset-2">cart(<span
+              id="cart-count">0</span>)</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ========================================================== -->
+    <!-- 2. Main Content (قسم المنتجات والفلترة) -->
+    <!-- ========================================================== -->
+    <main class="w-full px-8 md:px-16 py-8 flex-grow">
+
+      <!-- ترويسة الصفحة والفلترة -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-[#1a1a1a]/15 pb-6 mb-12 gap-4">
+        <div class="second-section">
+          <span class="text-[11px] uppercase tracking-[0.2em] text-neutral-500 font-sans">editorial catalog</span>
+          <h2 id="category-title" class="text-3xl md:text-4xl uppercase font-medium tracking-wider mt-1">
+            all products
+          </h2>
+        </div>
+
+        <!-- روابط التصفية المباشرة (Quick Category Switcher) -->
+        <div id="category-filter-links" class="link-filter flex items-center gap-6 text-xs uppercase tracking-widest font-normal">
+          <a href="shop.html?category=all" data-category="all" class="hover:opacity-60 transition-opacity">all</a>
+          <a href="shop.html?category=men" data-category="men" class="hover:opacity-60 transition-opacity">men</a>
+          <a href="shop.html?category=women" data-category="women" class="hover:opacity-60 transition-opacity">woman</a>
+          <a href="shop.html?category=kids" data-category="kids" class="hover:opacity-60 transition-opacity">kids</a>
+        </div>
+      </div>
+
+      <!-- شبكة المنتجات (الـ JavaScript بيرسم العناصر هنا تلقائياً) -->
+      <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
+
+        <!-- Skeleton Loading -->
+        <div class="animate-pulse flex flex-col gap-3">
+          <div class="w-full aspect-[3/4] bg-neutral-300 rounded-[2px]"></div>
+          <div class="h-4 bg-neutral-300 w-3/4 rounded-[2px]"></div>
+          <div class="h-3 bg-neutral-300 w-1/4 rounded-[2px]"></div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ========================================================== -->
+    <!-- 3. Footer -->
+    <!-- ========================================================== -->
+    <footer class="final-section w-full px-8 md:px-20 py-12 bg-[#E8E4DF] border-t border-[#1a1a1a]/10 mt-20">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <div class="flex items-center space-x-4">
+          <img src="https://www.iconpacks.net/icons/1/free-truck-icon-1058-thumb.png" alt="Delivery"
+            class="h-9 opacity-80">
+          <div>
+            <h3 class="uppercase font-semibold text-sm">fast delivery</h3>
+            <p class="text-[13px] text-neutral-600">Quick & safe delivery</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <img
+            src="https://media.discordapp.net/attachments/1521519341307302029/1528732694626701362/icons8-box-128.png?ex=6a88e604&is=6a879484&hm=e2794f386e8110a6cef4271723c5561b778cf044514889465732827dfbb71407&=&format=webp&quality=lossless"
+            alt="Return" class="h-8 opacity-80">
+          <div>
+            <h3 class="uppercase font-semibold text-sm">easy return</h3>
+            <p class="text-[13px] text-neutral-600">Within 15 days</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <img
+            src="https://media.discordapp.net/attachments/1521519341307302029/1528733224061243453/icons8-guarantee-50.png?ex=6a88e683&is=6a879503&hm=c2ed6919b48ae09538ec79c5d3480db9f7cb4531a1468b19a945c3f415bdbc85&=&format=webp&quality=lossless"
+            alt="Quality" class="h-8 opacity-80">
+          <div>
+            <h3 class="uppercase font-semibold text-sm">quality assured</h3>
+            <p class="text-[13px] text-neutral-600">Best fashion, best quality</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <img
+            src="https://media.discordapp.net/attachments/1521519341307302029/1528733597731651675/icons8-lock-50.png?ex=6a88e6dc&is=6a87955c&hm=7ef6469a6082fb482b1b129e5349a6daf82ea7115f88ae6ac9cea1900d565422&=&format=webp&quality=lossless"
+            alt="Payment" class="h-7 opacity-80">
+          <div>
+            <h3 class="uppercase font-semibold text-sm">secure payment</h3>
+            <p class="text-[13px] text-neutral-600">100% secure checkout</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div
+        class="text-center mt-12 pt-6 border-t border-[#1a1a1a]/10 text-xs text-neutral-500 uppercase tracking-widest">
+        &copy; 2026 GAZU. All rights reserved.
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- السكربتات الخاصة بالصفحة -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <script src="shop.js"></script>
+</body>
+
+</html>
