@@ -60,8 +60,16 @@ const updateWishlistCounter = () => {
   }
 
   if (wishlistLink) {
-    wishlistLink.classList.toggle("font-medium", wishlist.length > 0);
-    wishlistLink.classList.toggle("text-[#1a1a1a]", wishlist.length > 0);
+      // Only style the nav item as "active" when the user is actually on wishlist.html
+      const page = window.location.pathname.split('/').pop();
+      const isWishlistPage = page === 'wishlist.html' || document.body.classList.contains('page-wishlist');
+
+      if (isWishlistPage) {
+        wishlistLink.classList.toggle("font-medium", wishlist.length > 0);
+        wishlistLink.classList.toggle("text-[#1a1a1a]", wishlist.length > 0);
+      } else {
+        wishlistLink.classList.remove("font-medium", "text-[#1a1a1a]");
+      }
   }
 };
 
@@ -102,8 +110,20 @@ const updateCartCounter = () => {
 const removeFromWishlist = (productId) => {
   const wishlist = getWishlist().filter(id => id !== productId);
   if (typeof writeWishlist === 'function') writeWishlist(wishlist); else localStorage.setItem("gazu_wishlist", JSON.stringify(wishlist));
-  renderWishlist();
+
+  // remove the card from DOM (avoid full re-render)
+  const btn = document.querySelector(`.remove-from-wishlist[data-id="${productId}"]`);
+  if (btn) {
+    const card = btn.closest('.wish-card');
+    if (card) card.remove();
+  }
+
   updateWishlistCounter();
+
+  // if wishlist is empty now, render the empty state
+  if (!wishlist.length) {
+    renderWishlist();
+  }
 };
 
 /*animate wishlist function*/
@@ -114,7 +134,7 @@ const animateWishlist = () => {
 const maintl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
 // 1. أول حاجة الـ Nav ينزل وينور الشاشة
-  maintl.from(".main-nav",{
+maintl.from(".main-nav ", {
     opacity: 0,
     y: -20,
     stagger: 0.1,
@@ -212,10 +232,11 @@ const renderWishlist = () => {
     </div>
   `).join("");
 
-  animateWishlist(); /*animate wishlist function*/
+  // don't gate animation here; initial-load animation is triggered once on DOMContentLoaded below
 
   document.querySelectorAll(".remove-from-wishlist").forEach(button => {
     button.addEventListener("click", (e) => {
+      e.preventDefault();
       const productId = e.currentTarget.getAttribute("data-id");
       removeFromWishlist(productId);
     });
@@ -282,3 +303,21 @@ updateCartCounter();
 updateActiveNavLinks();
 renderWishlist();
 initGlobalSearchControls();
+
+// Run entry animation strictly once on initial page load (DOMContentLoaded)
+const runInitialWishlistAnimation = () => {
+  if (typeof animateWishlist !== 'function') return;
+
+  const run = () => {
+    try { animateWishlist(); } catch (e) { /* swallow to avoid breaking page */ }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run, { once: true });
+  } else {
+    // already loaded
+    run();
+  }
+};
+
+runInitialWishlistAnimation();

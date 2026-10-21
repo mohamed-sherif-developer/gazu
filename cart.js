@@ -296,16 +296,57 @@ const renderCart = () => {
 
   document.querySelectorAll(".qty-btn").forEach(button => {
     button.addEventListener("click", (e) => {
-      const productId = e.currentTarget.getAttribute("data-id");
-      const action = e.currentTarget.getAttribute("data-action");
-      updateCartQuantity(productId, action === "increase" ? 1 : -1);
+      e.preventDefault();
+      const btn = e.currentTarget;
+      const productId = btn.getAttribute("data-id");
+      const action = btn.getAttribute("data-action");
+
+      const containerRow = btn.closest('.wish-card');
+      const qtySpan = btn.parentElement ? btn.parentElement.querySelector('span') : null;
+      const currentQty = qtySpan ? (Number(qtySpan.textContent) || 0) : 0;
+      const delta = action === 'increase' ? 1 : -1;
+      const newQty = currentQty + delta;
+
+      if (newQty <= 0) {
+        // remove item from storage and DOM
+        const newCart = normalizeCart().filter(item => item.id !== productId);
+        if (typeof writeCart === 'function') writeCart(newCart); else localStorage.setItem('gazu_cart', JSON.stringify(newCart));
+        if (containerRow) containerRow.remove();
+      } else {
+        // update DOM quantity and storage
+        if (qtySpan) qtySpan.textContent = newQty;
+        const cart = normalizeCart();
+        const idx = cart.findIndex(i => i.id === productId);
+        if (idx > -1) {
+          cart[idx].quantity = newQty;
+          if (typeof writeCart === 'function') writeCart(cart); else localStorage.setItem('gazu_cart', JSON.stringify(cart));
+        }
+      }
+
+      updateCartCounter();
+      updateCartTotal();
+      // Do not call renderCart() to avoid re-triggering entry animations
     });
   });
 
   document.querySelectorAll(".remove-from-cart").forEach(button => {
     button.addEventListener("click", (e) => {
+      e.preventDefault();
       const productId = e.currentTarget.getAttribute("data-id");
-      removeFromCart(productId);
+
+      const newCart = normalizeCart().filter(item => item.id !== productId);
+      if (typeof writeCart === 'function') writeCart(newCart); else localStorage.setItem('gazu_cart', JSON.stringify(newCart));
+
+      const card = e.currentTarget.closest('.wish-card');
+      if (card) card.remove();
+
+      updateCartCounter();
+      updateCartTotal();
+
+      if (!newCart.length) {
+        // show empty state
+        renderCart();
+      }
     });
   });
 };

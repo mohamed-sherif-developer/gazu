@@ -2,7 +2,7 @@
 const maintl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
 // 1. أول حاجة الـ Nav ينزل وينور الشاشة
-maintl.from(".main-nav a, .main-nav h2", {
+maintl.from(".main-nav a, .main-nav h2, .main-nav .nav-login", {
     opacity: 0,
     y: -20,
     stagger: 0.1,
@@ -141,8 +141,15 @@ const updateWishlistCounter = () => {
     wishlistCountEl.textContent = wishlist.length;
 
     if (wishlistLink) {
-        wishlistLink.classList.toggle('font-medium', wishlist.length > 0);
-        wishlistLink.classList.toggle('text-[#1a1a1a]', wishlist.length > 0);
+        const page = window.location.pathname.split('/').pop();
+        const isWishlistPage = page === 'wishlist.html' || document.body.classList.contains('page-wishlist');
+
+        if (isWishlistPage) {
+            wishlistLink.classList.toggle('font-medium', wishlist.length > 0);
+            wishlistLink.classList.toggle('text-[#1a1a1a]', wishlist.length > 0);
+        } else {
+            wishlistLink.classList.remove('font-medium', 'text-[#1a1a1a]');
+        }
     }
 };
 
@@ -195,7 +202,7 @@ const updateActiveNavLink = () => {
         'wishlist.html': 'wishlist-link',
         'cart.html': 'cart-link',
         'shop.html-men': 'nav-men',
-        'shop.html-women': 'nav-women',
+        'shop.html-woman': 'nav-woman',
         'shop.html-kids': 'nav-kids'
     };
 
@@ -204,7 +211,7 @@ const updateActiveNavLink = () => {
         : page;
 
     const activeId = activeSelectors[selectedKey];
-    const navLinks = document.querySelectorAll('#wishlist-link, #cart-link, #nav-men, #nav-women, #nav-kids');
+    const navLinks = document.querySelectorAll('#wishlist-link, #cart-link, #nav-men, #nav-woman, #nav-kids');
 
     navLinks.forEach(link => {
         link.classList.remove('font-medium', 'text-[#1a1a1a]', 'scale-105');

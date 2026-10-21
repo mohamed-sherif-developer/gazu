@@ -25,6 +25,15 @@
       color: #1a1a1a;
       font-weight: 600;
     }
+
+    /* Reserve space for login/profile area to avoid layout jumps */
+    .nav-login { min-width: 9rem; display: inline-block; text-align: right; }
+    html.gazu-logged-in .login-logged-out { display: none !important; }
+    html.gazu-logged-in .login-logged-in { display: inline !important; }
+    html:not(.gazu-logged-in) .login-logged-in { display: none !important; }
+
+    /* Reserve space for small numeric badges to avoid width jumps */
+    #wishlist-count, #cart-count { display: inline-block; min-width: 2ch; text-align: center; }
   </style>
   <script src="auth.js"></script>
 </head>
@@ -44,7 +53,7 @@
         <div class="flex gap-6 text-xs md:text-sm">
           <a href="shop.html?category=men" id="nav-men"
             class="hover:underline underline-offset-2 transition-opacity duration-200">men</a>
-          <a href="shop.html?category=women" id="nav-women"
+          <a href="shop.html?category=woman" id="nav-woman"
             class="hover:underline underline-offset-2 transition-opacity duration-200">woman</a>
           <a href="shop.html?category=kids" id="nav-kids"
             class="hover:underline underline-offset-2 transition-opacity duration-200">kids</a>
@@ -57,7 +66,12 @@
 
         <!-- أدوات الـ Nav -->
         <div class="flex gap-6 text-xs md:text-sm items-center">
-          <a href="login.html" id="login-link" class="hover:underline underline-offset-2 hidden md:inline normal-case">login</a>
+          <div class="nav-login">
+            <a href="login.html" id="login-link" class="hover:underline underline-offset-2 hidden md:inline normal-case nav-login-link">
+              <span class="login-logged-out">login</span>
+              <span class="login-logged-in">Hi, <span class="user-name font-medium text-black text-[16px] tracking-wide"></span></span>
+            </a>
+          </div>
           <a href="#" id="search-toggle" class="search-toggle hover:underline underline-offset-2">search</a>
           <input id="global-search-input" type="text" placeholder="search" aria-label="Search products"
             class="search-panel hidden w-28 md:w-36 rounded-[2px] border border-[#1a1a1a]/15 bg-white/70 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-[#1a1a1a] placeholder:text-[#1a1a1a]/45 focus:outline-none focus:border-[#1a1a1a]/35">
@@ -87,7 +101,7 @@
         <div id="category-filter-links" class="link-filter flex items-center gap-6 text-xs uppercase tracking-widest font-normal">
           <a href="shop.html?category=all" data-category="all" class="hover:opacity-60 transition-opacity">all</a>
           <a href="shop.html?category=men" data-category="men" class="hover:opacity-60 transition-opacity">men</a>
-          <a href="shop.html?category=women" data-category="women" class="hover:opacity-60 transition-opacity">woman</a>
+          <a href="shop.html?category=woman" data-category="woman" class="hover:opacity-60 transition-opacity">woman</a>
           <a href="shop.html?category=kids" data-category="kids" class="hover:opacity-60 transition-opacity">kids</a>
         </div>
       </div>

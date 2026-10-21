@@ -17,14 +17,14 @@ const productsDB = [
   {
     id: "w1",
     name: "GAZU x Porsche Graphic Windbreaker",
-    category: "women",
+    category: "woman",
     price: 150,
     image: "img/w1.jpg"
   },
   {
     id: "w2",
     name: "GAZU x Porsche Graphic Windbreaker",
-    category: "women",
+    category: "woman",
     price: 150,
     image: "img/w2.jpg"
   },
@@ -57,8 +57,17 @@ const updateWishlistCounter = () => {
 
   const wishlistLink = document.getElementById("wishlist-link");
   if (wishlistLink) {
-    wishlistLink.classList.toggle("font-medium", wishlist.length > 0);
-    wishlistLink.classList.toggle("text-[#1a1a1a]", wishlist.length > 0);
+    const page = window.location.pathname.split('/').pop();
+    const isWishlistPage = page === 'wishlist.html' || document.body.classList.contains('page-wishlist');
+
+    if (isWishlistPage) {
+      wishlistLink.classList.toggle("font-medium", wishlist.length > 0);
+      wishlistLink.classList.toggle("text-[#1a1a1a]", wishlist.length > 0);
+    } else {
+      // ensure nav link isn't styled as active on other pages
+      wishlistLink.classList.remove("font-medium", "text-[#1a1a1a]");
+    }
+
     wishlistLink.setAttribute("aria-label", `${wishlist.length} items in wishlist`);
   }
 };
@@ -289,7 +298,7 @@ const updateActiveNavLinks = () => {
   const params = new URLSearchParams(window.location.search);
   const category = params.get("category");
 
-  const navLinks = document.querySelectorAll("#nav-men, #nav-women, #nav-kids, #wishlist-link, #cart-link");
+  const navLinks = document.querySelectorAll("#nav-men, #nav-woman, #nav-kids, #wishlist-link, #cart-link");
   navLinks.forEach(link => {
     link.classList.remove("font-medium", "text-[#1a1a1a]", "scale-105");
     link.style.fontSize = "";
@@ -308,7 +317,7 @@ const updateActiveNavLinks = () => {
   if (page === "shop.html" && category) {
     const targetId = {
       men: "nav-men",
-      women: "nav-women",
+      woman: "nav-woman",
       kids: "nav-kids"
     }[category.toLowerCase()];
 
@@ -394,18 +403,22 @@ const attachSearchHandler = () => {
 
   syncSearchValue();
 
-  searchInput.addEventListener("input", (e) => {
-    const value = e.target.value;
+  // Only run search when user finishes typing and presses Enter
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+
+    const value = searchInput.value.trim();
     const url = new URL(window.location.href);
 
-    if (value.trim()) {
+    if (value) {
       url.searchParams.set("search", value);
     } else {
       url.searchParams.delete("search");
     }
 
     window.history.replaceState({}, "", url);
-    initShop();
+    initShop(); // initShop will render filtered results and call animateProducts()
   });
 };
 

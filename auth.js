@@ -244,6 +244,17 @@ setupDataPersistence();
 const initializeUserSession = () => {
   const currentUser = getCurrentUser();
 
+  // Ensure document-level state is available as early as possible so CSS can avoid flashes
+  try {
+    if (currentUser) {
+      document.documentElement.classList.add('gazu-logged-in');
+      document.documentElement.dataset.gazuUsername = currentUser.name || '';
+    } else {
+      document.documentElement.classList.remove('gazu-logged-in');
+      delete document.documentElement.dataset.gazuUsername;
+    }
+  } catch (e) { /* ignore in very old browsers */ }
+
   // Prefer explicit id if present, fallback to link selectors
   const loginLink = document.getElementById('login-link') || document.querySelector('a[href="login.html"]') || document.querySelector('a[href="#"]');
   if (!loginLink) return;
@@ -251,7 +262,10 @@ const initializeUserSession = () => {
   if (currentUser) {
     // Show: hi, <Name> — keep user's original casing, make 'hi,' lowercase
     loginLink.href = 'profile.html';
-    loginLink.innerHTML = `<span>Hi,</span> <span class="font-medium text-black text-[16px] tracking-wide">${currentUser.name}</span>`;
+    const nameSpan = loginLink.querySelector('.user-name');
+    if (nameSpan) nameSpan.textContent = currentUser.name;
+    loginLink.classList.remove('uppercase');
+    loginLink.classList.add('normal-case');
     loginLink.classList.remove('uppercase');
     loginLink.classList.add('normal-case');
     loginLink.style.cursor = 'pointer';
@@ -259,7 +273,7 @@ const initializeUserSession = () => {
   } else {
     // Show 'LOGIN' in uppercase when logged out
     loginLink.href = 'login.html';
-    loginLink.textContent = 'LOGIN';
+    // leave the markup (two spans) intact; CSS will display the logged-out span
     loginLink.classList.remove('normal-case');
     loginLink.classList.add('uppercase');
     loginLink.style.cursor = '';
@@ -267,8 +281,13 @@ const initializeUserSession = () => {
   }
 };
 
+// Run early to set document state (class/attr) immediately when script is parsed in <head>
+try { initializeUserSession(); } catch (e) { /* safe-fail */ }
+
+// Also ensure the DOM-populating bits run when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeUserSession);
+  document.addEventListener('DOMContentLoaded', initializeUserSession, { once: true });
 } else {
+  // already parsed
   initializeUserSession();
 }

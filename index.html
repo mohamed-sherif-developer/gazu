@@ -8,6 +8,15 @@
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <script src="auth.js"></script>
 
+  <style>
+    /* Reserve login area space to prevent navbar jumps */
+    .nav-login { min-width: 9rem; display: inline-block; text-align: right; }
+    html.gazu-logged-in .login-logged-out { display: none !important; }
+    html.gazu-logged-in .login-logged-in { display: inline !important; }
+    html:not(.gazu-logged-in) .login-logged-in { display: none !important; }
+    #wishlist-count, #cart-count { display: inline-block; min-width: 2ch; text-align: center; }
+  </style>
+
 </head>
 <body>
 <!-- الغلاف الرئيسي للصفحة كلها (بيمنع السكرول العرضي المزعج) -->
@@ -22,12 +31,17 @@
     <nav class="main-nav flex justify-between items-center w-full tracking-[1px] font-normal uppercase z-20">
       <div class="flex gap-6">
         <a href="shop.html?category=men" id="nav-men" class="hover:underline underline-offset-2">men</a>
-        <a href="shop.html?category=women" id="nav-women" class="hover:underline underline-offset-2">woman</a>
+        <a href="shop.html?category=woman" id="nav-woman" class="hover:underline underline-offset-2">woman</a>
         <a href="shop.html?category=kids" id="nav-kids" class="hover:underline underline-offset-2">kids</a>
       </div>
       <h2 class="text-3xl -mt-5 font-medium tracking-[0.2em] flex relative mx-24">gazu</h2>
-      <div class="flex gap-6 items-center">
-        <a href="login.html" id="login-link" class="hover:underline underline-offset-2 normal-case">login</a>
+        <div class="flex gap-6 items-center">
+        <div class="nav-login">
+          <a href="login.html" id="login-link" class="hover:underline underline-offset-2 normal-case nav-login-link">
+            <span class="login-logged-out">login</span>
+            <span class="login-logged-in">Hi, <span class="user-name"></span></span>
+          </a>
+        </div>
         <a href="#" id="search-toggle" class="search-toggle hover:underline underline-offset-2">search</a>
         <input
           id="global-search-input"
@@ -95,17 +109,17 @@
       </div>
     </div>
 
-    <!-- كارت WOMEN -->
+    <!-- كارت WOMAN -->
     <div class="category-card group flex items-center gap-6 cursor-pointer y-10">
       <div class="w-32 h-48 md:w-36 md:h-56 overflow-hidden rounded-[3px] bg-neutral-900 shrink-0">
         <img src="img/home-woman.jpg" 
-             alt="Women Collection" 
+             alt="Woman Collection" 
              class="w-full h-full object-cover grayscale contrast-[1.15] brightness-[0.9] transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:scale-105">
       </div>
       <div class="flex flex-col justify-center uppercase tracking-[1.5px]">
-        <h3 class="text-lg font-semibold mb-1 font-sans">Women</h3>
+        <h3 class="text-lg font-semibold mb-1 font-sans">Woman</h3>
         <p class="text-[11px] text-neutral-400 normal-case mb-4 max-w-40 leading-relaxed">Effortless style for every you.</p>
-        <a href="shop.html?category=women" class="text-xs font-medium underline underline-offset-4 tracking-[2px] transition-colors group-hover:text-amber-500">Shop Women &rarr;</a>
+        <a href="shop.html?category=woman" class="text-xs font-medium underline underline-offset-4 tracking-[2px] transition-colors group-hover:text-amber-500">Shop Woman &rarr;</a>
       </div>
     </div>
 
